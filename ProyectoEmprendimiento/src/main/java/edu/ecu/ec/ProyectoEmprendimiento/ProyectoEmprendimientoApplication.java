@@ -1,7 +1,6 @@
 package edu.ecu.ec.ProyectoEmprendimiento;
 
 import edu.ecu.ec.ProyectoEmprendimiento.View.Login;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
