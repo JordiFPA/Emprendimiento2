@@ -1,9 +1,6 @@
 package edu.ecu.ec.ProyectoEmprendimiento.View;
 
 import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Image;
-import com.itextpdf.layout.property.TextAlignment;
 import edu.ecu.ec.ProyectoEmprendimiento.Models.Invoice;
 import edu.ecu.ec.ProyectoEmprendimiento.Services.ClientService;
 import edu.ecu.ec.ProyectoEmprendimiento.Services.ProductService;
@@ -19,6 +16,7 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.element.Image;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
@@ -27,8 +25,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import com.itextpdf.io.image.ImageDataFactory;
+
 
 @Component
 public class VentasFrame extends JFrame {
@@ -71,10 +71,6 @@ public class VentasFrame extends JFrame {
     private java.awt.Panel panel1;
     private int cantidadGasolina = 0;
     private String tipoGasolina = "";
-    private double subtotal = 0;
-    private double iva = 0;
-    private double total = 0;
-
 
     @Autowired
     private ClientService clientService;
@@ -90,6 +86,7 @@ public class VentasFrame extends JFrame {
         try {
             initComponents();
             this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            setExtendedState(VentasFrame.MAXIMIZED_BOTH);
         } catch (Exception ex) {
 
             ex.printStackTrace(); // Imprime la traza de la excepción en consola
@@ -135,6 +132,8 @@ public class VentasFrame extends JFrame {
         jTextField7 = new javax.swing.JTextField();
         jTextField8 = new javax.swing.JTextField();
         jTextField9 = new javax.swing.JTextField();
+
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/logo.png"))).getImage());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(221, 202, 155));
@@ -530,6 +529,7 @@ public class VentasFrame extends JFrame {
             client.setEmail(jTextField5.getText());
             clientService.save(client);
             JOptionPane.showMessageDialog(null, "Cliente creado con éxito");
+        } else {
         }
     }
 
@@ -567,28 +567,48 @@ public class VentasFrame extends JFrame {
     }
 
     private void actualizarTotalVenta() {
-        subtotal = 0;
+        double subtotal = 0;
+        double total = 0;
+        double iva = 0;
         for (ProductSale productSale : productosVenta) {
             subtotal += productSale.getProduct().getPrice() * productSale.getQuantity();
+            iva = subtotal * 0.15;
+            total = subtotal + iva;
         }
-
-        iva = subtotal * 0.15;
-        total = subtotal + iva;
-
-        jTextField7.setText(String.format("%.2f", iva));
-        jTextField9.setText(String.format("%.2f", subtotal));
-        jTextField8.setText(String.format("%.2f", total));
+        jTextField7.setText(String.valueOf(iva));
+        jTextField9.setText(String.valueOf(subtotal));
+        jTextField8.setText(String.valueOf(total));// Assuming jLabel9 is used to display the total
     }
 
     private void guardarVenta() {
+        String metodoPago = (String) jComboBox1.getSelectedItem();
+
         if (client != null && !productosVenta.isEmpty()) {
             try {
+                if ("TARJETA CREDITO".equals(metodoPago)) {
+                    JTextField numeroTarjeta = new JTextField();
+                    JTextField anoExpiracion = new JTextField();
+                    JTextField cvv = new JTextField();
+                    Object[] message = {
+                            "Número de tarjeta:", numeroTarjeta,
+                            "Año de expiración:", anoExpiracion,
+                            "CVV:", cvv
+                    };
+                    int option = JOptionPane.showConfirmDialog(this, message, "Ingrese los detalles de la tarjeta de crédito", JOptionPane.OK_CANCEL_OPTION);
+                    if (option == JOptionPane.OK_OPTION) {
+                        // Aquí puedes guardar los detalles de la tarjeta si es necesario
+                        saleService.createSalesOrder(client, productosVenta);
+                        JOptionPane.showMessageDialog(this, "Venta guardada exitosamente.");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Venta cancelada.");
+                    }
+                } else if ("EFECTIVO".equals(metodoPago)) {
+                    saleService.createSalesOrder(client, productosVenta);
+                    JOptionPane.showMessageDialog(this, "Venta aceptada.");
+                }
+                productosVenta.clear();
                 actualizarTablaProductos();
                 actualizarTotalVenta();
-                Invoice invoice = saleService.createSalesOrder(client, productosVenta);
-                JOptionPane.showMessageDialog(this, "Venta guardada exitosamente.");
-                generateInvoicePdf(invoice, client, productosVenta);
-                productosVenta.clear();
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Error al guardar la venta: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -597,9 +617,10 @@ public class VentasFrame extends JFrame {
         }
     }
 
-    private void generateInvoicePdf(Invoice invoice, Client client, List<ProductSale> productSaleList) {
+    private void generateInvoicePdf(Invoice invoice, Client client, List<Products> productList) {
         String dest = "invoice_" + invoice.getId() + ".pdf";
 
+        // Asegúrate de que la imagen esté en la carpeta resources
         InputStream imageStream = getClass().getClassLoader().getResourceAsStream("logo.png");
         if (imageStream == null) {
             System.err.println("Logo image not found in resources.");
@@ -612,75 +633,46 @@ public class VentasFrame extends JFrame {
             Document document = new Document(pdf);
             document.setMargins(20, 20, 20, 20);
 
-            Image logo = new Image(ImageDataFactory.create(imageStream.readAllBytes()));
-            logo.setFixedPosition(20, 725); // Posición del logo en la esquina superior izquierda
-            logo.scaleToFit(100, 100); // Escalar el logo para que se ajuste
+            // Agrega el logo de tu empresa
+            Image logo = new Image(ImageDataFactory.create("logo.png"));
             document.add(logo);
 
+            // Información del cliente
+            document.add(new Paragraph("Factura ID: " + invoice.getId()).setFontSize(12).setBold());
+            document.add(new Paragraph("Placa: " + client.getPlaca()).setFontSize(12));
+            document.add(new Paragraph("Nombre: " + client.getName_client()).setFontSize(12));
+            document.add(new Paragraph("eMail: " + client.getEmail()).setFontSize(12));
+            document.add(new Paragraph("Phone: " + client.getPhone()).setFontSize(12));
+            document.add(new Paragraph("Dirección: " + client.getDir()).setFontSize(12));
+            document.add(new Paragraph("\n"));
 
-            document.add(new Paragraph("\n\n\n\n\n"));
-
-
-            Paragraph invoiceInfo = new Paragraph()
-                    .add("Factura ID: " + invoice.getId() + "\n")
-                    .add("Fecha Emision: " + invoice.getIssueDate() + "\n")
-                    .setTextAlignment(TextAlignment.LEFT);
-            document.add(invoiceInfo);
-
-            document.add(new Paragraph("\n\n"));
-
-            Paragraph clientInfo = new Paragraph()
-                    .add("Placa: " + client.getPlaca() + "\n")
-                    .add("Nombre: " + client.getName_client() + "\n")
-                    .add("eMail: " + client.getEmail() + "\n")
-                    .add("Phone: " + client.getPhone() + "\n")
-                    .add("Dirección: " + client.getDir() + "\n")
-                    .setTextAlignment(TextAlignment.LEFT);
-            document.add(clientInfo);
-
-
-            document.add(new Paragraph("\n\n\n")); // Espacio adicional
-
-
+            // Tabla de productos
             float[] columnWidths = {1, 5, 2, 2};
             Table table = new Table(UnitValue.createPercentArray(columnWidths));
-            table.setWidth(UnitValue.createPercentValue(100)); // Ocupa todo el espacio horizontal
-            table.addHeaderCell(new Cell().add(new Paragraph("ID")).setBold());
-            table.addHeaderCell(new Cell().add(new Paragraph("Producto")).setBold());
-            table.addHeaderCell(new Cell().add(new Paragraph("Cantidad")).setBold());
-            table.addHeaderCell(new Cell().add(new Paragraph("Precio")).setBold());
+            table.addHeaderCell("ID");
+            table.addHeaderCell("Producto");
+            table.addHeaderCell("Cantidad");
+            table.addHeaderCell("Precio");
 
-            for (ProductSale productSale : productSaleList) {
-                Products product = productSale.getProduct();
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(product.getId()))));
-                table.addCell(new Cell().add(new Paragraph(product.getName())));
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(productSale.getQuantity()))));
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(product.getPrice()))));
+            for (Products product : productList) {
+                table.addCell(String.valueOf(product.getId()));
+                table.addCell(product.getName());
+                table.addCell(String.valueOf(product.getPrice()));
             }
+
             document.add(table);
+            document.add(new Paragraph("\n"));
 
-
-            document.add(new Paragraph("\n\n\n")); // Espacio adicional
-
-
-            Paragraph totals = new Paragraph()
-                    .add("Subtotal: " + String.format("%.2f", subtotal) + "\n")
-                    .add("IVA (15%): " + String.format("%.2f", iva) + "\n")
-                    .add("Total: " + String.format("%.2f", total) + "\n")
-                    .setTextAlignment(TextAlignment.RIGHT);
-            document.add(totals);
+            // Total de la venta
+            document.add(new Paragraph("Total de la venta: " + invoice.getTotalAmount()).setFontSize(12).setBold());
 
             document.close();
             System.out.println("Factura PDF generada en: " + dest);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }
-
-
-
-
 
 

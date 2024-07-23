@@ -42,7 +42,8 @@ public class Login extends JFrame {
         jLabel3 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
 
-        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/logo.png"))).getImage()); //poner icono a la ventana
+        //poner icono a la ventana
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/logo.png"))).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login");
         setResizable(false);
@@ -54,7 +55,7 @@ public class Login extends JFrame {
                     VentanaPrincipal ventana = applicationContext.getBean(VentanaPrincipal.class);
                     ventana.setLogin(Login.this);
                     ventana.setVisible(true);
-                    dispose(); // Cerrar la ventana de login
+                    dispose();
                 }
             }
         });
@@ -71,6 +72,14 @@ public class Login extends JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
                 jPasswordField.requestFocus();
+            }
+        });
+        jTextField1.setToolTipText("Ingrese su cédula");
+
+        jPasswordField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jButton1.doClick();
             }
         });
 
@@ -145,19 +154,35 @@ public class Login extends JFrame {
     }// </editor-fold>
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
     }
 
     private boolean loginButtonActionPerformed(ActionEvent evt) {
+
+        String idText = jTextField1.getText();
+        if (idText == null || idText.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El campo de usuario no puede estar vacío", "Error", JOptionPane.ERROR_MESSAGE);
+            jTextField1.requestFocus();
+            return false;
+        }
+
         String password = String.valueOf(jPasswordField.getPassword());
-        trabajadorActual = trabajador.buscarTrabajador(Long.parseLong(jTextField1.getText()));
-        if (trabajadorActual != null && password.equals(trabajadorActual.getContraseña())) {
-            return true;
-        } else {
-            // Login failed
-            jPasswordField.setText("");
-            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
-            jPasswordField.requestFocus();
+        try {
+            long id = Long.parseLong(idText);
+            trabajadorActual = trabajador.buscarTrabajador(Long.valueOf(id));
+
+            if (trabajadorActual != null && password.equals(trabajadorActual.getContraseña())) {
+                return true;
+            } else {
+                jPasswordField.setText("");
+                JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
+                jPasswordField.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Usuario incorrecto, recuerda que es el ingreso de su cedula.", "Error", JOptionPane.ERROR_MESSAGE);
+            jTextField1.requestFocus();
+            jTextField1.setText("");
+            jTextField1.requestFocus();
             return false;
         }
     }
