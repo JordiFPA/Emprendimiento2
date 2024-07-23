@@ -179,7 +179,7 @@ public class Login extends JFrame {
                 return false;
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Usuario incorrecto, recuerda que es el ingreso de su cedula.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Usuario incorrecto, recuerda que el ingreso es su cedula.", "Error", JOptionPane.ERROR_MESSAGE);
             jTextField1.requestFocus();
             jTextField1.setText("");
             jTextField1.requestFocus();
