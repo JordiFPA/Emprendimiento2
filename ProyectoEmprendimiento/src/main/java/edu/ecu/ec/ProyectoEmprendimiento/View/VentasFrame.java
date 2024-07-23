@@ -1,4 +1,5 @@
 package edu.ecu.ec.ProyectoEmprendimiento.View;
+
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
@@ -18,6 +19,7 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.UnitValue;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -75,7 +78,7 @@ public class VentasFrame extends JFrame {
     private double iva = 0;
     private double total = 0;
     private String RUC = "1752908086001";
-    private String DireccionEmpresa= "Av.America y La Gasca";
+    private String DireccionEmpresa = "Av.America y La Gasca";
 
 
     @Autowired
@@ -91,7 +94,9 @@ public class VentasFrame extends JFrame {
     public VentasFrame() throws Exception {
         try {
             initComponents();
+            setExtendedState(VentasFrame.MAXIMIZED_BOTH);
             this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
         } catch (Exception ex) {
 
             ex.printStackTrace(); // Imprime la traza de la excepción en consola
@@ -161,6 +166,7 @@ public class VentasFrame extends JFrame {
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
         jLabel6.setText("TELÉFONO:");
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/logo.png"))).getImage());
 
         jTextField1.setFont(new java.awt.Font("Segoe UI", 3, 20)); // NOI18N
 
