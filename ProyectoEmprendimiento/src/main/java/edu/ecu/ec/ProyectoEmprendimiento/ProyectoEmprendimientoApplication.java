@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
+
 @SpringBootApplication
 @ComponentScan(basePackages = "edu.ecu.ec.ProyectoEmprendimiento")
 public class ProyectoEmprendimientoApplication {
