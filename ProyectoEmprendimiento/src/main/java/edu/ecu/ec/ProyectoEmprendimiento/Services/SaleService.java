@@ -32,20 +32,31 @@ public class SaleService {
 
     @Transactional
     public Invoice createSalesOrder(Client client, List<ProductSale> productSales) {
-        double totalAmount = 0.0;
+        double subtotal = 0.0;
 
-        // Update inventory and calculate total amount
+        // Update inventory and calculate subtotal
         for (ProductSale productSale : productSales) {
-            Products product = productRepository.findById(productSale.getProduct().getId()).orElseThrow(() -> new RuntimeException("Product not found"));
+            Products product = productRepository.findById(productSale.getProduct().getId())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
             if (product.getStock() < productSale.getQuantity()) {
                 throw new RuntimeException("Insufficient stock for product: " + product.getName());
             }
             product.setStock(product.getStock() - productSale.getQuantity());
             productRepository.save(product);
 
-            totalAmount += product.getPrice() * productSale.getQuantity();
+            subtotal += product.getPrice() * productSale.getQuantity();
         }
+
+        double iva = subtotal * 0.15;  // Assuming 15% IVA
+        double totalAmount = subtotal + iva;
+
         Invoice invoice = new Invoice(client, productSales, totalAmount, LocalDate.now());
         return invoiceRepository.save(invoice);
     }
+
+    public Invoice getLastSaleOrder() {
+        return invoiceRepository.findTopByOrderByIssueDateDesc()
+                .orElseThrow(() -> new RuntimeException("No sales found"));
+    }
+
 }

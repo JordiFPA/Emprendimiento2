@@ -1,6 +1,7 @@
 package edu.ecu.ec.ProyectoEmprendimiento.View;
 
 import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.layout.element.Image;
 import edu.ecu.ec.ProyectoEmprendimiento.Models.Invoice;
 import edu.ecu.ec.ProyectoEmprendimiento.Services.ClientService;
 import edu.ecu.ec.ProyectoEmprendimiento.Services.ProductService;
@@ -16,7 +17,6 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.UnitValue;
-import com.itextpdf.layout.element.Image;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
@@ -26,8 +26,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import com.itextpdf.io.image.ImageDataFactory;
-
+import java.util.stream.Collectors;
 
 @Component
 public class VentasFrame extends JFrame {
@@ -564,47 +563,30 @@ public class VentasFrame extends JFrame {
 
     private void actualizarTotalVenta() {
         double subtotal = 0;
-        double total = 0;
-        double iva = 0;
         for (ProductSale productSale : productosVenta) {
             subtotal += productSale.getProduct().getPrice() * productSale.getQuantity();
-            iva = subtotal * 0.15;
-            total = subtotal + iva;
         }
-        jTextField7.setText(String.valueOf(iva));
-        jTextField9.setText(String.valueOf(subtotal));
-        jTextField8.setText(String.valueOf(total));// Assuming jLabel9 is used to display the total
+
+        double iva = subtotal * 0.15;
+        double total = subtotal + iva;
+
+        // Actualiza los campos de texto con los valores calculados
+        jTextField7.setText(String.format("%.2f", iva));
+        jTextField9.setText(String.format("%.2f", subtotal));
+        jTextField8.setText(String.format("%.2f", total));
     }
 
+
     private void guardarVenta() {
-        String metodoPago = (String) jComboBox1.getSelectedItem();
 
         if (client != null && !productosVenta.isEmpty()) {
             try {
-                if ("TARJETA CREDITO".equals(metodoPago)) {
-                    JTextField numeroTarjeta = new JTextField();
-                    JTextField anoExpiracion = new JTextField();
-                    JTextField cvv = new JTextField();
-                    Object[] message = {
-                            "Número de tarjeta:", numeroTarjeta,
-                            "Año de expiración:", anoExpiracion,
-                            "CVV:", cvv
-                    };
-                    int option = JOptionPane.showConfirmDialog(this, message, "Ingrese los detalles de la tarjeta de crédito", JOptionPane.OK_CANCEL_OPTION);
-                    if (option == JOptionPane.OK_OPTION) {
-                        // Aquí puedes guardar los detalles de la tarjeta si es necesario
-                        saleService.createSalesOrder(client, productosVenta);
-                        JOptionPane.showMessageDialog(this, "Venta guardada exitosamente.");
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Venta cancelada.");
-                    }
-                } else if ("EFECTIVO".equals(metodoPago)) {
-                    saleService.createSalesOrder(client, productosVenta);
-                    JOptionPane.showMessageDialog(this, "Venta aceptada.");
-                }
-                productosVenta.clear();
                 actualizarTablaProductos();
                 actualizarTotalVenta();
+                saleService.createSalesOrder(client, productosVenta);
+                JOptionPane.showMessageDialog(this, "Venta guardada exitosamente.");
+              productosVenta.clear();
+
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Error al guardar la venta: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -612,6 +594,9 @@ public class VentasFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "No se puede guardar la venta. Verifique los datos del cliente y los productos.");
         }
     }
+
+
+
 
     private void generateInvoicePdf(Invoice invoice, Client client, List<Products> productList) {
         String dest = "invoice_" + invoice.getId() + ".pdf";
@@ -630,7 +615,7 @@ public class VentasFrame extends JFrame {
             document.setMargins(20, 20, 20, 20);
 
             // Agrega el logo de tu empresa
-            Image logo = new Image(ImageDataFactory.create(imageStream);
+            Image logo = new Image(ImageDataFactory.create("logo.png"));
             document.add(logo);
 
             // Información del cliente
@@ -672,6 +657,6 @@ public class VentasFrame extends JFrame {
 }
 
 
-}
+
 
 
