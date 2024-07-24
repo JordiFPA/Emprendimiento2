@@ -19,23 +19,30 @@ public class ClientService {
         return clientRepository.findByPlaca(placa);
     }
 
-    public List<Client> getAllProducts() {
+    public List<Client> getAllClients() {
         return clientRepository.findAll();
     }
 
     public Client updateClient(String placa, Client updatedClient) {
-        Optional<Client> existingClientOptional = Optional.ofNullable(clientRepository.findByPlaca(placa));
-        if (existingClientOptional.isPresent()) {
-            Client existingClient = existingClientOptional.get();
+        Client existingClient = clientRepository.findByPlaca(placa);
+        if (existingClient != null) {
             existingClient.setName_client(updatedClient.getName_client());
             existingClient.setEmail(updatedClient.getEmail());
             existingClient.setPhone(updatedClient.getPhone());
             existingClient.setDir(updatedClient.getDir());
-            existingClient.setPlaca(updatedClient.getPlaca());
             return clientRepository.save(existingClient);
         } else {
             return null;
         }
+    }
+
+    public boolean deleteClientByPlaca(String placa) {
+        Client client = clientRepository.findByPlaca(placa);
+        if (client != null) {
+            clientRepository.delete(client);
+            return true;
+        }
+        return false;
     }
 
 

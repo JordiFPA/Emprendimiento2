@@ -60,7 +60,12 @@ public class VentanaPrincipal extends JFrame {
         });
 
         gasolinaButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18NjButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        gasolinaButton.setText("Inventario Gasolina");
+        gasolinaButton.setText("Gestionar Clientes");
+        gasolinaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+              gestionarClientes(evt);
+            }
+        });
 
         facturasButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18NjButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         facturasButton.setText("Facturas");
@@ -116,7 +121,7 @@ public class VentanaPrincipal extends JFrame {
 
     private void inventarioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inventarioButtonActionPerformed
 
-        Inventario inventario = applicationContext.getBean(Inventario.class);
+        InventarioGrande inventario = applicationContext.getBean(InventarioGrande.class);
         inventario.setVisible(true);
     }
 
@@ -135,6 +140,14 @@ public class VentanaPrincipal extends JFrame {
             JOptionPane.showMessageDialog(null, "Solo administradores pueden ingresar");
         }
     }
+
+    private void gestionarClientes(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inventarioButtonActionPerformed
+
+        InventarioClient clients = applicationContext.getBean(InventarioClient.class);
+        clients.setVisible(true);
+    }
+
+
 
     public Login getLogin() {
         return login;

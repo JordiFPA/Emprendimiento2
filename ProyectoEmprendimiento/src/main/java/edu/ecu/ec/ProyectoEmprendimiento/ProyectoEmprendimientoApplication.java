@@ -16,8 +16,6 @@ public class ProyectoEmprendimientoApplication {
         ApplicationContext context = SpringApplication.run(ProyectoEmprendimientoApplication.class, args);
         Login frame = context.getBean(Login.class);
         frame.setVisible(true);
-
-
     }
 
 }
