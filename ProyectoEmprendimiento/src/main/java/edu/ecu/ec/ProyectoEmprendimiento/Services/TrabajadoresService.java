@@ -7,13 +7,17 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TrabajadoresService {
     @Autowired
     TrabajadoresRepository trabajadoresService;
+
     public void createTrabajador(Trabajadores t) {
         trabajadoresService.save(t);
     }
+
     @Transactional
     public Trabajadores buscarTrabajador(Long cedula) {
         Trabajadores trabajador = trabajadoresService.findById(cedula).orElse(null);
@@ -21,6 +25,15 @@ public class TrabajadoresService {
             Hibernate.initialize(trabajador.getContraseña());
         }
         return trabajador;
+    }
+
+    @Transactional
+    public List<Trabajadores> getAllTrabajadores() {
+        return trabajadoresService.findAll();
+    }
+
+    public void eliminarTrabajador(Long cedula) {
+        trabajadoresService.deleteById(cedula);
     }
 
 

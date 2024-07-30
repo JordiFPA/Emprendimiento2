@@ -27,6 +27,9 @@ public class InvoiceService {
     public List<Invoice> getAllInvoices() {
         return invoiceRepository.findAll();
     }
+    public List<Invoice> getInvoicesByPlaca(String placa) {
+        return invoiceRepository.findByClientPlaca(placa);
+    }
 
     public Invoice getInvoiceById(Long id) {
         return invoiceRepository.findById(id).orElse(null);

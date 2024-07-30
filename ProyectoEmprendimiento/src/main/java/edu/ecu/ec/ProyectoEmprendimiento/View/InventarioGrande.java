@@ -7,9 +7,11 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -38,6 +40,15 @@ public class InventarioGrande extends JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Inventario");
         setResizable(false);
+        getContentPane().setBackground(new java.awt.Color(221, 202, 155));
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/logo.png"))).getImage());
+
+        ImageIcon logoIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/inventario.png")));
+        Image scaledLogo = logoIcon.getImage().getScaledInstance(400, 200, Image.SCALE_SMOOTH);
+        fondoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        fondoLabel.setIcon(new ImageIcon(scaledLogo));
+        fondoLabel.setPreferredSize(new Dimension(500, 500));
+
 
         tableModel = new DefaultTableModel(
                 new Object[][]{},
@@ -46,11 +57,6 @@ public class InventarioGrande extends JFrame {
         jTable1.setModel(tableModel);
         jScrollPane1.setViewportView(jTable1);
 
-
-
-
-        fondoLabel.setBackground(new java.awt.Color(221, 202, 155));
-        fondoLabel.setText("imagen");
         fondoLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
 

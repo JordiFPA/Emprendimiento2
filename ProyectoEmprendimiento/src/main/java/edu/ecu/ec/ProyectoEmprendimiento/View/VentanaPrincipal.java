@@ -28,6 +28,7 @@ public class VentanaPrincipal extends JFrame {
         gasolinaButton = new javax.swing.JButton();
         facturasButton = new javax.swing.JButton();
 
+
         setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/logo.png"))).getImage()); //poner icono a la ventana
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ventana Principal");
@@ -43,8 +44,6 @@ public class VentanaPrincipal extends JFrame {
         logo.setPreferredSize(new Dimension(500, 500));
 
         ventaButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18NjButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        ventaButton.setText("Venta");
-
         ventaButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ventaButtonActionPerformed(evt);
@@ -52,7 +51,6 @@ public class VentanaPrincipal extends JFrame {
         });
 
         inventarioButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18NjButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        inventarioButton.setText("Inventario");
         inventarioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inventarioButtonActionPerformed(evt);
@@ -60,7 +58,6 @@ public class VentanaPrincipal extends JFrame {
         });
 
         gasolinaButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18NjButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        gasolinaButton.setText("Gestionar Clientes");
         gasolinaButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
               gestionarClientes(evt);
@@ -68,7 +65,6 @@ public class VentanaPrincipal extends JFrame {
         });
 
         facturasButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18NjButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        facturasButton.setText("Facturas");
         facturasButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 facturasButtonActionPerformed(evt);
@@ -117,6 +113,18 @@ public class VentanaPrincipal extends JFrame {
         );
 
         pack();
+
+        ImageIcon ventaIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/ventas.png")));
+        ImageIcon inventarioIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/inventario.png")));
+        ImageIcon gasolinaIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/clientes.png")));
+        ImageIcon facturasIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/facturas.png")));
+
+        SwingUtilities.invokeLater(() -> {
+            ventaButton.setIcon(resizeImageIcon(ventaIcon, ventaButton.getWidth(), ventaButton.getHeight()));
+            inventarioButton.setIcon(resizeImageIcon(inventarioIcon, inventarioButton.getWidth(), inventarioButton.getHeight()));
+            gasolinaButton.setIcon(resizeImageIcon(gasolinaIcon, gasolinaButton.getWidth(), gasolinaButton.getHeight()));
+            facturasButton.setIcon(resizeImageIcon(facturasIcon, facturasButton.getWidth(), facturasButton.getHeight()));
+        });
     }
 
     private void inventarioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inventarioButtonActionPerformed
@@ -135,6 +143,8 @@ public class VentanaPrincipal extends JFrame {
 
         if (login.getTrabajadorActual().getRango().equals("admin")) {
             JOptionPane.showMessageDialog(null, "Correcto, Pingrese");
+            Facturas facturas = applicationContext.getBean(Facturas.class);
+            facturas.setVisible(true);
 
         } else {
             JOptionPane.showMessageDialog(null, "Solo administradores pueden ingresar");
@@ -147,14 +157,18 @@ public class VentanaPrincipal extends JFrame {
         clients.setVisible(true);
     }
 
-
-
     public Login getLogin() {
         return login;
     }
 
     public void setLogin(Login login) {
         this.login = login;
+    }
+
+    private ImageIcon resizeImageIcon(ImageIcon icon, int width, int height) {
+        Image img = icon.getImage();
+        Image resizedImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImg);
     }
 
     private javax.swing.JButton gasolinaButton;
