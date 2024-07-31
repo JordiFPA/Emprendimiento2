@@ -33,6 +33,7 @@ public class SaleService {
     @Transactional
     public Invoice createSalesOrder(Client client, List<ProductSale> productSales) {
         double subtotal = 0.0;
+        double iva = 0.0;
 
         // Update inventory and calculate subtotal
         for (ProductSale productSale : productSales) {
@@ -44,10 +45,17 @@ public class SaleService {
             product.setStock(product.getStock() - productSale.getQuantity());
             productRepository.save(product);
 
-            subtotal += product.getPrice() * productSale.getQuantity();
+            double totalProducto = product.getPrice() * productSale.getQuantity();
+            subtotal += totalProducto;
+
+            // Verificar si el producto es gasolina y no incluir IVA
+            if (!product.getName().equalsIgnoreCase("EXTRA") &&
+                    !product.getName().equalsIgnoreCase("SUPER") &&
+                    !product.getName().equalsIgnoreCase("DIESEL")) {
+                iva += totalProducto * 0.15; // Solo se agrega IVA si no es gasolina
+            }
         }
 
-        double iva = subtotal * 0.15;  // Assuming 15% IVA
         double totalAmount = subtotal + iva;
 
         Invoice invoice = new Invoice(client, productSales, totalAmount, LocalDate.now());

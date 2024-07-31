@@ -27,7 +27,7 @@ public class ProductSaleService {
         return productSaleRepository.findById(id).orElse(null);
     }
 
-    public ProductSale createProductSale(ProductSale productSale) {
+    /*public ProductSale createProductSale(ProductSale productSale) {
         Products product = productRepository.findById(productSale.getProduct().getId()).orElseThrow(() -> new RuntimeException("Product not found"));
         if (product.getStock() < productSale.getQuantity()) {
             throw new RuntimeException("Insufficient stock for product: " + product.getName());
@@ -36,7 +36,7 @@ public class ProductSaleService {
         productRepository.save(product);
 
         return productSaleRepository.save(productSale);
-    }
+    }*/
 
     public ProductSale updateProductSale(Long id, ProductSale updatedProductSale) {
         Optional<ProductSale> existingProductSaleOptional = productSaleRepository.findById(id);

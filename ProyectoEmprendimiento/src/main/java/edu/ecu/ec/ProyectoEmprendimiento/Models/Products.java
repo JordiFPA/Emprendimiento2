@@ -17,7 +17,7 @@ public class Products {
     private double price;
 
     @Column(name = "stock")
-    private int stock;
+    private double stock;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductSale> productSales;
@@ -33,7 +33,7 @@ public class Products {
         this.productSales = productSales;
     }
 
-    public Products(String name, double price, int stock) {
+    public Products(String name, double price, double stock) {
         this.name = name;
         this.price = price;
         this.stock = stock;
@@ -55,11 +55,11 @@ public class Products {
         this.name = name;
     }
 
-    public int getStock() {
+    public double getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(double stock) {
         this.stock = stock;
     }
 

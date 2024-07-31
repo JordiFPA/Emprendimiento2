@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -212,6 +213,9 @@ public class InventarioGrande extends JFrame {
             return;
         }
 
+        // Definir el formato para dos decimales
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
         tableModel.setRowCount(0);
         List<Products> productos = productService.getAllProducts();
         for (Products producto : productos) {
@@ -219,7 +223,7 @@ public class InventarioGrande extends JFrame {
                     producto.getId(),
                     producto.getName(),
                     producto.getPrice(),
-                    producto.getStock()
+                    decimalFormat.format(producto.getStock()) // Formatear el stock
             };
             tableModel.addRow(row);
         }

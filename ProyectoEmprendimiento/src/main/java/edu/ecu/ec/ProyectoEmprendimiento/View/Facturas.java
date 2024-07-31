@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class Facturas extends JFrame {
@@ -35,9 +37,18 @@ public class Facturas extends JFrame {
     private javax.swing.JTable jTable2;
 
 
-    public Facturas() {
-        initComponents();
+    public Facturas() throws Exception {
+        try {
+            initComponents();
+            setExtendedState(VentasFrame.MAXIMIZED_BOTH);
+            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace(); // Imprime la traza de la excepción en consola
+        }
     }
+
 
     private void initComponents() {
 
@@ -55,12 +66,16 @@ public class Facturas extends JFrame {
         jLabel2 = new javax.swing.JLabel();
         jButton6 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
         jPanel1.setBackground(new java.awt.Color(221, 202, 155));
 
-        jLabel1.setText("jLabel1");
         jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/logo.png"))).getImage());
+
+        ImageIcon logoIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/facturas.png")));
+        Image scaledLogo = logoIcon.getImage().getScaledInstance(420, 200, Image.SCALE_SMOOTH);
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setIcon(new ImageIcon(scaledLogo));
+        jLabel1.setPreferredSize(new Dimension(480, 500));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{
@@ -288,7 +303,7 @@ public class Facturas extends JFrame {
                 throw new IllegalArgumentException("La contraseña es obligatoria.");
             }
 
-            Trabajadores nuevoTrabajador = new Trabajadores(cedula, nombre, rango, contraseña);
+            Trabajadores nuevoTrabajador = new Trabajadores(cedula, contraseña, rango,nombre );
             trabajadoresService.createTrabajador(nuevoTrabajador);
 
             JOptionPane.showMessageDialog(this, "Trabajador agregado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);

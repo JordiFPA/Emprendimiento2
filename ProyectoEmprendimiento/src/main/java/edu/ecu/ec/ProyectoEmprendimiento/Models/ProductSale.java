@@ -18,7 +18,7 @@ public class ProductSale {
     private Products product;
 
     @Column(name = "quantity")
-    private int quantity;
+    private double quantity;
 
     @Column(name = "total")
     private double total;
@@ -57,14 +57,7 @@ public class ProductSale {
         this.product = product;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-        this.total = calculateTotal(); // Recalculamos el total al cambiar la cantidad
-    }
 
     public double getTotal() {
         return total;
@@ -80,6 +73,14 @@ public class ProductSale {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    public double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(double quantity) {
+        this.quantity = quantity;
     }
 
     @Override

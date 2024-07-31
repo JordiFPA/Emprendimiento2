@@ -25,7 +25,8 @@ public class InventarioClient extends JFrame {
 
     public InventarioClient() {
         initComponents();
-        setExtendedState(InventarioClient.MAXIMIZED_BOTH);
+        setExtendedState(VentasFrame.MAXIMIZED_BOTH);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     private void initComponents() {

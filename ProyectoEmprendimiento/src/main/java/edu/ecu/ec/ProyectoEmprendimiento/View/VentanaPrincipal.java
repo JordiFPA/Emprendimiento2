@@ -142,12 +142,10 @@ public class VentanaPrincipal extends JFrame {
     private void facturasButtonActionPerformed(java.awt.event.ActionEvent evt) {
 
         if (login.getTrabajadorActual().getRango().equals("admin")) {
-            JOptionPane.showMessageDialog(null, "Correcto, Pingrese");
             Facturas facturas = applicationContext.getBean(Facturas.class);
             facturas.setVisible(true);
-
         } else {
-            JOptionPane.showMessageDialog(null, "Solo administradores pueden ingresar");
+            JOptionPane.showMessageDialog(null, "Solo administradores pueden ingresar", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
