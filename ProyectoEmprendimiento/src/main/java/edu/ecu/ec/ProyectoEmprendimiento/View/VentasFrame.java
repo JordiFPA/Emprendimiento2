@@ -161,6 +161,7 @@ public class VentasFrame extends JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(221, 202, 155));
+        setTitle("Ventas");
 
         panel1.setBackground(new java.awt.Color(221, 202, 155));
 
@@ -576,7 +577,7 @@ public class VentasFrame extends JFrame {
             client.setPhone(jTextField4.getText());
             client.setEmail(jTextField5.getText());
             clientService.save(client);
-            JOptionPane.showMessageDialog(null, "Cliente creado con éxito");
+            JOptionPane.showMessageDialog(null, "Cliente creado con éxito","Nuevo Cliente",JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -686,7 +687,7 @@ public class VentasFrame extends JFrame {
                 actualizarTotalVenta();
                 if (manejarMetodoPago()) {
                     Invoice invoice = saleService.createSalesOrder(client, productosVenta);
-                    JOptionPane.showMessageDialog(this, "Venta guardada exitosamente.");
+                    JOptionPane.showMessageDialog(this, "Venta guardada exitosamente.","Venta Exitosa",JOptionPane.INFORMATION_MESSAGE);
                     String pdfPath = generateInvoicePdf(invoice, client, productosVenta);
 
                     // Limpiar la lista de productos de venta
@@ -908,7 +909,7 @@ public class VentasFrame extends JFrame {
 
             return validarDatosTarjeta(numeroTarjeta.getText(), mesExpiracion.getText(), anoExpiracion.getText(), cvv.getText());
         } else if ("EFECTIVO".equals(metodoPago)) {
-            String valorEfectivo = JOptionPane.showInputDialog(this, "Ingrese el valor del efectivo:");
+            String valorEfectivo = JOptionPane.showInputDialog(this, "Ingrese el valor del efectivo:","Efectivo",JOptionPane.QUESTION_MESSAGE);
             try {
                 double efectivo = Double.parseDouble(valorEfectivo);
                 double totalFactura = total; // Método para obtener el total de la factura
@@ -917,7 +918,7 @@ public class VentasFrame extends JFrame {
                     JOptionPane.showMessageDialog(this, "Pago en efectivo aceptado. Vuelto: " + vuelto);
                     return true; // Pago aceptado
                 } else {
-                    JOptionPane.showMessageDialog(this, "El efectivo ingresado es insuficiente para cubrir el total de la factura.");
+                    JOptionPane.showMessageDialog(this, "El efectivo ingresado es insuficiente para cubrir el total de la factura.","Efectivo Insuficiente",JOptionPane.ERROR_MESSAGE);
                     return false; // Efectivo insuficiente
                 }
             } catch (NumberFormatException e) {

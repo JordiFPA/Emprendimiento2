@@ -70,6 +70,7 @@ public class Facturas extends JFrame {
 
         jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/logo.png"))).getImage());
+        setTitle("Facturas | Trabajadores");
 
         ImageIcon logoIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/facturas.png")));
         Image scaledLogo = logoIcon.getImage().getScaledInstance(420, 200, Image.SCALE_SMOOTH);
@@ -155,10 +156,9 @@ public class Facturas extends JFrame {
             }
         });
 
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
-        jLabel2.setText("Administrar Trabajadores");
-        jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        logoIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/trabajadores.png")));
+        scaledLogo = logoIcon.getImage().getScaledInstance(420, 111, Image.SCALE_SMOOTH);
+        jLabel2.setIcon(new ImageIcon(scaledLogo));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

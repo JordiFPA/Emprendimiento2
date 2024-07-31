@@ -31,7 +31,7 @@ public class VentanaPrincipal extends JFrame {
 
         setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/logo.png"))).getImage()); //poner icono a la ventana
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Ventana Principal");
+        setTitle("Menu Principal");
         setPreferredSize(new java.awt.Dimension(700, 700));
         setResizable(false);
 
